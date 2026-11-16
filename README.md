@@ -25,6 +25,19 @@
 
 # 🇹🇷 Türkçe Dokümantasyon
 
+## 📥 Doğrudan İndirme & Kurulum (macOS `.dmg`)
+
+Kod derlemeden doğrudan macOS uygulamasını kurmak için [**GitHub Releases**](https://github.com/imozkandev/Mac-Cleaner/releases) sayfasından en güncel kurulum dosyasını indirebilirsiniz:
+
+1. [**Releases**](https://github.com/imozkandev/Mac-Cleaner/releases) sayfasından **`mac-cleaner-1.1.0-macOS-arm64.dmg`** (veya `.zip`) dosyasını indirin.
+2. İndirilen `.dmg` dosyasını çift tıklayarak açın ve **`mac-cleaner.app`** uygulamasını **`Applications` (Uygulamalar)** klasörüne sürükleyin.
+3. İlk açılışta macOS Gatekeeper uyarısı görürseniz uygulamaya **Sağ Tık > Aç (Open)** diyerek veya terminalde şu komutu çalıştırarak başlatabilirsiniz:
+   ```bash
+   xattr -cr /Applications/mac-cleaner.app
+   ```
+
+---
+
 ## 🌟 Proje Hakkında
 
 **`mac-cleaner`**, macOS'un yerleşik depolama yönetimi aracının (*Sistem Ayarları > Genel > Depolama*) "Sistem Verileri" (*System Data*) altında gizlediği yüzlerce gigabaytlık önbelleği, geliştirici kalıntılarını (`Xcode DerivedData`, `node_modules`, `.venv`, `Docker`, `Homebrew`), silinmiş uygulamaların unutulan artıklarını ve çift dosyaları şeffaf bir şekilde analiz edip güvenle temizlemek için tasarlanmış açık kaynaklı bir macOS masaüstü uygulamasıdır.

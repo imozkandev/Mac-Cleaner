@@ -1,0 +1,66 @@
+name: Build & Publish macOS Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag (e.g. v1.1.0)'
+        required: true
+        default: 'v1.1.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    name: Build macOS (.dmg & .zip)
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Native macOS App, DMG & ZIP
+        run: node scripts/build-mac.js
+
+      - name: Create GitHub Release & Upload Installers
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
+          name: "mac-cleaner ${{ github.event.inputs.tag_name || github.ref_name }} — macOS Release"
+          generate_release_notes: true
+          files: |
+            dist/*.dmg
+            dist/*.zip
+          body: |
+            ## 🚀 mac-cleaner ${{ github.event.inputs.tag_name || github.ref_name }} (macOS)
+
+            ### 🇹🇷 Kurulum (Türkçe)
+            1. Aşağıdaki **`mac-cleaner-*-macOS-arm64.dmg`** (veya `.zip`) dosyasını indirin.
+            2. `.dmg` dosyasını çift tıklayarak açın ve **`mac-cleaner.app`** simgesini **`Applications` (Uygulamalar)** klasörüne sürükleyin.
+            3. İlk açılışta macOS Gatekeeper uyarısı çıkarsa uygulamaya **Sağ Tık > Aç (Open)** diyerek veya terminalde şu komutu çalıştırarak başlatabilirsiniz:
+               ```bash
+               xattr -cr /Applications/mac-cleaner.app
+               ```
+
+            ---
+
+            ### 🇬🇧 Installation (English)
+            1. Download **`mac-cleaner-*-macOS-arm64.dmg`** (or `.zip`) from Assets below.
+            2. Open the `.dmg` image and drag **`mac-cleaner.app`** into your **`Applications`** folder.
+            3. On first launch, if macOS Gatekeeper prompts an unsigned developer warning, **Right-Click > Open** or run:
+               ```bash
+               xattr -cr /Applications/mac-cleaner.app
+               ```

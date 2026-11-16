@@ -20,6 +20,19 @@
 
 ---
 
+## 📥 Direct Download & Install (macOS `.dmg`)
+
+You can download the ready-to-use macOS installer directly from the [**GitHub Releases**](https://github.com/imozkandev/Mac-Cleaner/releases) page without building from source:
+
+1. Download **`mac-cleaner-1.1.0-macOS-arm64.dmg`** (or `.zip`) from [**Releases**](https://github.com/imozkandev/Mac-Cleaner/releases).
+2. Double-click the `.dmg` file and drag **`mac-cleaner.app`** into your **`Applications`** folder.
+3. On first launch, if macOS Gatekeeper shows an unverified developer prompt, **Right-Click > Open** or run:
+   ```bash
+   xattr -cr /Applications/mac-cleaner.app
+   ```
+
+---
+
 ## 🌟 Overview
 
 **`mac-cleaner`** is a native-grade, open-source macOS storage management, developer cache cleaner, smart application uninstaller, and live menu bar utility designed for developers, content creators, and power users.

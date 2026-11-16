@@ -23,8 +23,9 @@
     "dev": "electron .",
     "web": "node server.js",
     "check": "node -c server.js && node -c main.js && node -c src/api/routes.js",
-    "pack": "npx electron-builder --dir",
-    "dist": "npx electron-builder --mac"
+    "build": "node scripts/build-mac.js",
+    "pack": "node scripts/build-mac.js",
+    "dist": "node scripts/build-mac.js"
   },
   "keywords": [
     "macOS",
