@@ -37,6 +37,7 @@ async function createMainWindow() {
     minHeight: 680,
     titleBarStyle: 'hiddenInset',
     trafficLightPosition: { x: 18, y: 18 },
+    icon: path.join(__dirname, 'assets', 'icon.png'),
     vibrancy: 'under-window',
     visualEffectState: 'active',
     backgroundColor: '#0c0f17',
@@ -231,6 +232,12 @@ ipcMain.handle('window-close', () => { if (mainWindow) mainWindow.close(); });
 
 // App Lifecycle
 app.whenReady().then(async () => {
+  try {
+    if (process.platform === 'darwin' && app.dock) {
+      app.dock.setIcon(path.join(__dirname, 'assets', 'icon.png'));
+    }
+  } catch (e) {}
+
   try {
     const serverInfo = await startServer();
     serverPort = serverInfo.port;

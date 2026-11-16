@@ -1,24 +1,81 @@
 {
   "name": "mac-cleaner",
-  "version": "1.0.0",
-  "description": "macOS için minimalist, güvenli ve yüksek performanslı masaüstü depolama yönetim ve geliştirici temizlik uygulaması.",
+  "productName": "mac-cleaner",
+  "version": "1.1.0",
+  "description": "Advanced macOS Storage Manager, Developer Cache Cleaner, Smart Uninstaller & Menu Bar Companion — SIP Compliant & Safe Trash Protected.",
   "main": "main.js",
+  "homepage": "https://github.com/imozkandev/Mac-Cleaner",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imozkandev/Mac-Cleaner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/imozkandev/Mac-Cleaner/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "os": [
+    "darwin"
+  ],
   "scripts": {
     "start": "electron .",
+    "dev": "electron .",
     "web": "node server.js",
-    "dev": "electron ."
+    "check": "node -c server.js && node -c main.js && node -c src/api/routes.js",
+    "pack": "npx electron-builder --dir",
+    "dist": "npx electron-builder --mac"
   },
   "keywords": [
     "macOS",
-    "cleaner",
-    "developer",
-    "xcode",
-    "docker",
+    "mac-cleaner",
+    "storage-manager",
+    "developer-tools",
+    "xcode-cleaner",
+    "node-modules",
+    "docker-prune",
     "treemap",
-    "uninstaller"
+    "duplicate-finder",
+    "uninstaller",
+    "menu-bar",
+    "electron"
   ],
-  "author": "ozkandev",
+  "author": "ozkandev (https://github.com/imozkandev)",
   "license": "MIT",
+  "build": {
+    "appId": "com.ozkandev.maccleaner",
+    "productName": "mac-cleaner",
+    "copyright": "Copyright © 2026 ozkandev",
+    "files": [
+      "main.js",
+      "preload.js",
+      "server.js",
+      "assets/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.utilities",
+      "icon": "assets/icon.icns",
+      "darkModeSupport": true,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ]
+    }
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2"
