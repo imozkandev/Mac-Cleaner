@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="app_title">mac-cleaner — Gelişmiş macOS Depolama & Sistem Yöneticisi</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/treemap.css">
+</head>
+<body data-theme="dark">
+
+  <!-- Titlebar (macOS Frameless) -->
+  <header class="titlebar">
+    <div class="titlebar-center">
+      <button class="mobile-menu-btn" id="btnMobileMenu" title="Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="app-brand">
+        <div class="app-logo-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </div>
+        <span class="app-brand-title">mac-cleaner</span>
+        <span class="badge-pro" data-i18n="brand_pro">PRO</span>
+      </div>
+    </div>
+
+    <div class="titlebar-actions">
+      <!-- Theme Switcher (Dark / Light) -->
+      <button class="btn-icon-toggle" id="btnThemeToggle" title="Tema Değiştir (Light / Dark)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
+      <!-- Language Switcher (TR / EN) -->
+      <button class="btn btn-secondary btn-sm" id="btnLangToggle" title="Switch Language / Dil Değiştir">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 3px;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span id="langText">EN</span>
+      </button>
+
+      <span class="badge-tag tag-success" id="sipStatusBadge">
+        <span class="status-dot"></span> <span data-i18n="sip_active">SIP & Safe Trash Aktif</span>
+      </span>
+      <button class="btn btn-secondary btn-sm" id="btnHeaderPurgeRam" title="Hareketsiz RAM'i serbest bırak">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="btn_purge_ram">RAM Boşalt</span>
+      </button>
+      <button class="btn btn-primary btn-sm" id="btnHeaderQuickScan">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span data-i18n="btn_quick_scan">Hızlı Tara</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- App Layout Container -->
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="appSidebar">
+      <div class="sidebar-heading" data-i18n="nav_system">Sistem</div>
+      <div class="nav-item active" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <span data-i18n="nav_dashboard">Genel Bakış</span>
+      </div>
+      <div class="nav-item" data-view="deep-clean">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+        <span data-i18n="nav_deep_clean">Derin Sistem Temizliği</span>
+      </div>
+      <div class="nav-item" data-view="dev">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span data-i18n="nav_dev_clean">Geliştirici Temizliği</span>
+      </div>
+      <div class="nav-item" data-view="uninstaller">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span data-i18n="nav_uninstaller">Akıllı Kaldırıcı</span>
+      </div>
+      <div class="nav-item" data-view="maintenance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span data-i18n="nav_maintenance">Bakım & Servisler</span>
+      </div>
+
+      <div class="sidebar-heading" data-i18n="nav_analysis">Analiz & Görselleştirme</div>
+      <div class="nav-item" data-view="duplicates">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        <span data-i18n="nav_duplicates">Çift Dosya Analizi</span>
+      </div>
+      <div class="nav-item" data-view="treemap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        <span data-i18n="nav_treemap">Disk Haritası</span>
+      </div>
+
+      <div class="sidebar-heading" data-i18n="nav_automation">Otomasyon</div>
+      <div class="nav-item" data-view="companion">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+        <span data-i18n="nav_companion">Menü Çubuğu</span>
+      </div>
+      <div class="nav-item" data-view="rules">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span data-i18n="nav_rules">Otomasyon & Kurallar</span>
+      </div>
+      <div class="nav-item" data-view="safety">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="nav_safety">Güvenlik & İstisnalar</span>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-system-badge">
+          <span id="sidebarMacModel">Apple Mac</span>
+          <span id="sidebarOsVersion">macOS</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+
+      <!-- 1. DASHBOARD VIEW -->
+      <section class="view-panel active" id="view-dashboard">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              <span data-i18n="dashboard_title">Sistem Durumu & Genel Bakış</span>
+            </h1>
+            <p class="page-desc" data-i18n="dashboard_desc">Anlık RAM, disk kullanımı ve potansiyel temizlik fırsatları</p>
+          </div>
+          <button class="btn btn-primary" id="btnDashboardFullScan">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+            <span data-i18n="btn_full_scan">Tüm Sistemi Tara</span>
+          </button>
+        </div>
+
+        <!-- 3 Gauge Cards -->
+        <div class="dashboard-grid">
+          <div class="card gauge-card">
+            <div class="gauge-ring-container">
+              <svg class="gauge-svg" viewBox="0 0 100 100">
+                <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+                <circle class="gauge-progress gauge-cyan" id="gaugeDiskCircle" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="125.6"/>
+              </svg>
+              <div class="gauge-value-text" id="gaugeDiskVal">--%</div>
+            </div>
+            <div class="gauge-details">
+              <div class="gauge-label" data-i18n="gauge_storage">Depolama Alanı</div>
+              <div class="gauge-subtext" id="gaugeDiskSubtext">-- GB / -- GB</div>
+              <div style="font-size: 11px; color: var(--accent-cyan);" id="gaugeDiskFree">-- GB Boş</div>
+            </div>
+          </div>
+
+          <div class="card gauge-card">
+            <div class="gauge-ring-container">
+              <svg class="gauge-svg" viewBox="0 0 100 100">
+                <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+                <circle class="gauge-progress gauge-purple" id="gaugeRamCircle" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="125.6"/>
+              </svg>
+              <div class="gauge-value-text" id="gaugeRamVal">--%</div>
+            </div>
+            <div class="gauge-details">
+              <div class="gauge-label" data-i18n="gauge_ram">Bellek (RAM)</div>
+              <div class="gauge-subtext" id="gaugeRamSubtext">-- GB / -- GB</div>
+              <button class="btn btn-secondary btn-sm" id="btnDashboardPurgeRam" style="margin-top: 4px;" data-i18n="quick_purge">Hızlı Boşalt</button>
+            </div>
+          </div>
+
+          <div class="card gauge-card">
+            <div class="gauge-ring-container">
+              <svg class="gauge-svg" viewBox="0 0 100 100">
+                <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+                <circle class="gauge-progress gauge-indigo" id="gaugeCpuCircle" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="200"/>
+              </svg>
+              <div class="gauge-value-text" id="gaugeCpuVal">--%</div>
+            </div>
+            <div class="gauge-details">
+              <div class="gauge-label" data-i18n="gauge_cpu">CPU & Yük</div>
+              <div class="gauge-subtext" id="gaugeCpuSubtext">Apple Silicon</div>
+              <div style="font-size: 11px; color: var(--text-muted);" id="gaugeCpuCores">-- Çekirdek</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Storage Breakdown Bar -->
+        <div class="card storage-overview-card">
+          <div class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+            <span data-i18n="storage_breakdown">Disk Dağılım Kırılımı (Storage Breakdown)</span>
+          </div>
+          <div class="storage-bar">
+            <div class="storage-segment seg-dev" id="segDev" style="width: 25%;" title="Geliştirici Önbelleği"></div>
+            <div class="storage-segment seg-apps" id="segApps" style="width: 30%;" title="Uygulamalar"></div>
+            <div class="storage-segment seg-media" id="segMedia" style="width: 15%;" title="Medya"></div>
+            <div class="storage-segment seg-docs" id="segDocs" style="width: 10%;" title="Belgeler"></div>
+            <div class="storage-segment seg-trash" id="segTrash" style="width: 5%;" title="Çöp Kutusu"></div>
+            <div class="storage-segment seg-free" id="segFree" style="width: 15%;" title="Boş Alan"></div>
+          </div>
+          <div class="storage-legend">
+            <div class="legend-item"><div class="legend-color-dot seg-dev"></div><span><span data-i18n="legend_dev">Geliştirici (Xcode, Docker, Node)</span> (<span id="devLegendSize">--</span>)</span></div>
+            <div class="legend-item"><div class="legend-color-dot seg-apps"></div><span><span data-i18n="legend_apps">Uygulamalar</span> (<span id="appsLegendSize">--</span>)</span></div>
+            <div class="legend-item"><div class="legend-color-dot seg-media"></div><span><span data-i18n="legend_media">Medya & Görseller</span> (<span id="mediaLegendSize">--</span>)</span></div>
+            <div class="legend-item"><div class="legend-color-dot seg-docs"></div><span><span data-i18n="legend_docs">Belgeler & İndirilenler</span> (<span id="docsLegendSize">--</span>)</span></div>
+            <div class="legend-item"><div class="legend-color-dot seg-trash"></div><span><span data-i18n="legend_trash">Çöp Kutusu</span> (<span id="trashLegendSize">0 B</span>)</span></div>
+            <div class="legend-item"><div class="legend-color-dot seg-free"></div><span><span data-i18n="legend_free">Boş Alan</span> (<span id="freeLegendSize">--</span>)</span></div>
+          </div>
+        </div>
+
+        <!-- Quick Clean Recommendation Cards -->
+        <h3 style="font-size: 15px; margin-bottom: 12px; color: var(--text-secondary);" data-i18n="quick_clean_opportunities">Hızlı Temizlik Fırsatları</h3>
+        <div class="dashboard-grid" id="quickCleanCardsContainer">
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 6px;">
+                <span class="card-icon-badge" style="background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+                <span data-i18n="subtab_system_caches">Sistem & Tarayıcı Önbellekleri</span>
+              </div>
+              <p style="font-size: 12.5px; color: var(--text-muted);" id="cardCachesSummary">Chrome, Spotify, Telegram, JetBrains</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+              <span class="size-pill" id="cardCachesSize">-- GB</span>
+              <button class="btn btn-secondary btn-sm" onclick="App.navigateTo('deep-clean')" data-i18n="btn_inspect">İncele</button>
+            </div>
+          </div>
+
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 6px;">
+                <span class="card-icon-badge" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-indigo);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+                <span>Xcode DerivedData</span>
+              </div>
+              <p style="font-size: 12.5px; color: var(--text-muted);" id="cardXcodeDerivedSummary">Eski derleme kalıntıları</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+              <span class="size-pill" id="cardXcodeDerivedSize">-- MB</span>
+              <button class="btn btn-secondary btn-sm" onclick="App.navigateTo('dev')" data-i18n="btn_inspect">İncele</button>
+            </div>
+          </div>
+
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 6px;">
+                <span class="card-icon-badge" style="background: rgba(244, 63, 94, 0.15); color: #fb7185;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></span>
+                <span data-i18n="trash_title">macOS Çöp Kutusu</span>
+              </div>
+              <p style="font-size: 12.5px; color: var(--text-muted);" id="cardTrashSummary" data-i18n="trash_desc">Bekleyen silinmiş dosyalar</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+              <span class="size-pill" id="cardTrashSize">-- MB</span>
+              <button class="btn btn-danger btn-sm" id="btnEmptyTrash" data-i18n="btn_empty">Boşalt</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Process Monitor (RAM & CPU Hogs) -->
+        <div class="card" style="margin-top: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+            <div class="card-title" style="margin-bottom: 0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <span data-i18n="process_monitor_title">Canlı Bellek & CPU Tüketen Süreçler (Process Inspector)</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary btn-sm active" id="btnProcSortMem">RAM'e Göre</button>
+              <button class="btn btn-secondary btn-sm" id="btnProcSortCpu">CPU'ya Göre</button>
+              <button class="btn btn-secondary btn-sm" id="btnRefreshProcesses" title="Yenile">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>PID</th>
+                  <th data-i18n="col_item">Süreç / Uygulama Adı</th>
+                  <th>Bellek (RAM)</th>
+                  <th>CPU %</th>
+                  <th width="110" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyProcesses">
+                <tr><td colspan="5" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. DEEP SYSTEM CLEAN VIEW (NEW COMPREHENSIVE CLEANER) -->
+      <section class="view-panel" id="view-deep-clean">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+              <span data-i18n="deep_clean_title">Derin Sistem & Kullanıcı Temizliği</span>
+            </h1>
+            <p class="page-desc" data-i18n="deep_clean_desc">Tarayıcılar, mesaj ekleri, çökme logları, yarım kalan indirmeler ve büyük dosyalar</p>
+          </div>
+          <button class="btn btn-secondary" id="btnDeepCleanRefresh">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            <span data-i18n="btn_refresh">Yeniden Tara</span>
+          </button>
+        </div>
+
+        <div class="subtabs-bar">
+          <button class="subtab-btn active" data-subtab="deep-caches">
+            <span data-i18n="subtab_system_caches">Kullanıcı & Sistem Önbellekleri</span>
+            <span class="badge-count" id="countDeepCaches">--</span>
+          </button>
+          <button class="subtab-btn" data-subtab="deep-logs">
+            <span data-i18n="subtab_logs">Sistem & Uygulama Logları</span>
+            <span class="badge-count" id="countDeepLogs">--</span>
+          </button>
+          <button class="subtab-btn" data-subtab="deep-attachments">
+            <span data-i18n="subtab_attachments">Mesaj & E-Posta Ekleri</span>
+            <span class="badge-count" id="countDeepAttachments">--</span>
+          </button>
+          <button class="subtab-btn" data-subtab="deep-downloads">
+            <span data-i18n="subtab_downloads">İndirme Kalıntıları & DMG</span>
+            <span class="badge-count" id="countDeepDownloads">--</span>
+          </button>
+          <button class="subtab-btn" data-subtab="deep-large">
+            <span data-i18n="subtab_large_files">Büyük & Eski Dosyalar</span>
+            <span class="badge-count" id="countDeepLarge">--</span>
+          </button>
+        </div>
+
+        <!-- Subtab 1: Caches -->
+        <div class="subtab-content" id="subtab-deep-caches">
+          <div class="filter-bar">
+            <span style="font-size: 13px; color: var(--text-secondary);">
+              Toplam Temizlenebilir Önbellek: <strong class="size-pill" id="deepCachesTotalSize">-- GB</strong>
+            </span>
+            <button class="btn btn-danger btn-sm" id="btnCleanSelectedDeepCaches" data-i18n="btn_clean_selected">Seçilileri Çöp Kutusuna Taşı</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox" class="custom-checkbox" id="checkAllDeepCaches" checked></th>
+                  <th data-i18n="col_item">Öğe Adı</th>
+                  <th data-i18n="col_category">Kategori</th>
+                  <th data-i18n="col_size">Boyut</th>
+                  <th width="100" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyDeepCaches">
+                <tr><td colspan="5" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Subtab 2: Logs -->
+        <div class="subtab-content" id="subtab-deep-logs" style="display: none;">
+          <div class="filter-bar">
+            <span style="font-size: 13px; color: var(--text-secondary);">
+              Toplam Sistem Logu: <strong class="size-pill" id="deepLogsTotalSize">-- MB</strong>
+            </span>
+            <button class="btn btn-danger btn-sm" id="btnCleanSelectedDeepLogs" data-i18n="btn_clean_selected">Seçilileri Çöp Kutusuna Taşı</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox" class="custom-checkbox" id="checkAllDeepLogs" checked></th>
+                  <th data-i18n="col_item">Log Adı</th>
+                  <th data-i18n="col_category">Kategori</th>
+                  <th data-i18n="col_size">Boyut</th>
+                  <th width="100" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyDeepLogs">
+                <tr><td colspan="5" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Subtab 3: Attachments -->
+        <div class="subtab-content" id="subtab-deep-attachments" style="display: none;">
+          <div class="filter-bar">
+            <span style="font-size: 13px; color: var(--text-secondary);">
+              Mesaj & Posta Ekleri: <strong class="size-pill" id="deepAttachmentsTotalSize">-- MB</strong>
+            </span>
+            <button class="btn btn-danger btn-sm" id="btnCleanSelectedAttachments" data-i18n="btn_clean_selected">Seçilileri Çöp Kutusuna Taşı</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox" class="custom-checkbox" id="checkAllDeepAttachments" checked></th>
+                  <th data-i18n="col_item">Ek Klasörü</th>
+                  <th data-i18n="col_category">Kategori</th>
+                  <th data-i18n="col_size">Boyut</th>
+                  <th width="140" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyDeepAttachments">
+                <tr><td colspan="5" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Subtab 4: Downloads Residues -->
+        <div class="subtab-content" id="subtab-deep-downloads" style="display: none;">
+          <div class="filter-bar">
+            <span style="font-size: 13px; color: var(--text-secondary);">
+              Kalıntı DMG, PKG ve Yarım Dosyalar: <strong class="size-pill" id="deepDownloadsTotalSize">-- MB</strong>
+            </span>
+            <button class="btn btn-danger btn-sm" id="btnCleanSelectedDownloads" data-i18n="btn_clean_selected">Seçilileri Çöp Kutusuna Taşı</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox" class="custom-checkbox" id="checkAllDeepDownloads" checked></th>
+                  <th data-i18n="col_item">Dosya Adı</th>
+                  <th data-i18n="col_category">Uzantı</th>
+                  <th data-i18n="col_size">Boyut</th>
+                  <th width="140" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyDeepDownloads">
+                <tr><td colspan="5" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Subtab 5: Large & Old Files -->
+        <div class="subtab-content" id="subtab-deep-large" style="display: none;">
+          <div class="filter-bar">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 13px; color: var(--text-secondary);">Minimum Boyut:</span>
+              <select class="btn btn-secondary btn-sm" id="selectLargeFileSize" style="background: var(--bg-card); color: var(--text-main);">
+                <option value="100">> 100 MB</option>
+                <option value="500">> 500 MB</option>
+                <option value="1024">> 1 GB</option>
+                <option value="5120">> 5 GB</option>
+              </select>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <span style="font-size: 13px; color: var(--text-secondary);">
+                Toplam Büyük Dosya: <strong class="size-pill" id="deepLargeTotalSize">-- GB</strong>
+              </span>
+              <button class="btn btn-danger btn-sm" id="btnCleanSelectedLargeFiles" data-i18n="btn_clean_selected">Seçilileri Çöp Kutusuna Taşı</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox" class="custom-checkbox" id="checkAllDeepLarge"></th>
+                  <th data-i18n="col_item">Dosya</th>
+                  <th data-i18n="col_category">Tür</th>
+                  <th data-i18n="col_size">Boyut</th>
+                  <th data-i18n="col_date">Eskilik & Tarih</th>
+                  <th width="140" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyDeepLarge">
+                <tr><td colspan="6" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. DEV CLEAN VIEW -->
+      <section class="view-panel" id="view-dev">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span data-i18n="dev_title">Geliştirici & Güç Kullanıcısı Temizliği</span>
+            </h1>
+            <p class="page-desc" data-i18n="dev_desc">Xcode kalıntıları, hareketsiz proje bağımlılıkları ve konteyner önbellekleri</p>
+          </div>
+          <button class="btn btn-secondary" id="btnDevRefresh">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            <span data-i18n="btn_refresh">Yeniden Tara</span>
+          </button>
+        </div>
+
+        <div class="subtabs-bar">
+          <button class="subtab-btn active" data-subtab="dev-xcode">
+            <span data-i18n="subtab_xcode">Xcode Derin Temizlik</span>
+            <span class="badge-count" id="countXcode">--</span>
+          </button>
+          <button class="subtab-btn" data-subtab="dev-deps" id="subtab-deps">
+            <span data-i18n="subtab_deps">Proje Bağımlılıkları (node_modules, .venv)</span>
+            <span class="badge-count" id="countDeps">--</span>
+          </button>
+          <button class="subtab-btn" data-subtab="dev-containers">
+            <span data-i18n="subtab_containers">Docker, Homebrew & Paket Önbellekleri</span>
+          </button>
+        </div>
+
+        <!-- Subtab 1: Xcode Deep Clean -->
+        <div class="subtab-content" id="subtab-dev-xcode">
+          <div class="filter-bar">
+            <span style="font-size: 13px; color: var(--text-secondary);">
+              Toplam Geri Kazanılabilir Xcode Alanı: <strong class="size-pill" id="xcodeTotalReclaimable">0 B</strong>
+            </span>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-danger btn-sm" id="btnCleanSelectedDerivedData" data-i18n="btn_clean_selected">
+                Seçilileri Çöp Kutusuna Taşı
+              </button>
+              <button class="btn btn-primary btn-sm" id="btnCleanAllDerivedData" data-i18n="btn_clean_all_derived">
+                Tüm DerivedData'yı Temizle
+              </button>
+            </div>
+          </div>
+
+          <div class="table-container" style="margin-bottom: 24px;">
+            <table class="data-table" id="tableDerivedData">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox" class="custom-checkbox" id="checkAllDerived"></th>
+                  <th data-i18n="col_item">Proje / DerivedData Dizini</th>
+                  <th data-i18n="col_size">Boyut</th>
+                  <th data-i18n="col_date">Son Değiştirilme</th>
+                  <th width="100" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyDerivedData">
+                <tr><td colspan="5" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--text-secondary);">Simülatörler, Eski Arşivler & Crash Logları</h3>
+          <div class="dashboard-grid" id="xcodeOtherCards">
+          </div>
+        </div>
+
+        <!-- Subtab 2: Dependencies -->
+        <div class="subtab-content" id="subtab-dev-deps" style="display: none;">
+          <div class="filter-bar">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="search-input-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="searchDepsInput" placeholder="Proje veya bağımlılık ara..." data-i18n="search_deps">
+              </div>
+              <button class="btn btn-secondary btn-sm" id="btnSelectCustomDepFolder">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <span data-i18n="btn_select_folder">Özel Klasör Tara</span>
+              </button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <label class="switch-container">
+                <div class="switch">
+                  <input type="checkbox" id="filterInactive30Days">
+                  <span class="slider"></span>
+                </div>
+                <span style="font-size: 13px; color: var(--text-secondary);" data-i18n="filter_inactive_30">Sadece Hareketsiz (>30 gün) Göster</span>
+              </label>
+              <button class="btn btn-danger btn-sm" id="btnDeleteSelectedDeps" data-i18n="btn_clean_selected">Seçilileri Çöp Kutusuna Taşı</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table" id="tableDeps">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox" class="custom-checkbox" id="checkAllDeps"></th>
+                  <th data-i18n="col_item">Proje Adı</th>
+                  <th data-i18n="col_category">Ekosistem</th>
+                  <th data-i18n="col_size">Boyut</th>
+                  <th data-i18n="col_date">Hareketsizlik</th>
+                  <th data-i18n="col_path">Yol</th>
+                  <th width="90" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyDeps">
+                <tr><td colspan="7" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Subtab 3: Containers -->
+        <div class="subtab-content" id="subtab-dev-containers" style="display: none;">
+          <div class="dashboard-grid">
+            <div class="card">
+              <div class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14h6v6H4z"/><path d="M14 14h6v6h-6z"/><path d="M14 4h6v6h-6z"/></svg>
+                <span data-i18n="docker_card_title">Docker Konteyner & İmaj Temizliği</span>
+              </div>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;" id="dockerStatusText">
+                Kullanılmayan konteyner, imaj ve build cache tespiti.
+              </p>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+                <span class="size-pill" id="dockerReclaimableSize">-- MB</span>
+                <button class="btn btn-primary btn-sm" id="btnPruneDocker">docker system prune</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                <span data-i18n="brew_card_title">Homebrew Temizliği (brew cleanup)</span>
+              </div>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+                Eski formül sürümleri ve indirme önbelleği.
+              </p>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+                <span class="size-pill" id="brewCacheSize">-- MB</span>
+                <button class="btn btn-secondary btn-sm" id="btnCleanupBrew" data-i18n="btn_run_brew">brew cleanup Çalıştır</button>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 14px; margin: 20px 0 12px; color: var(--text-secondary);">Paket Yöneticisi Önbellekleri (npm, yarn, pnpm, pip, cargo)</h3>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="col_item">Paket Yöneticisi</th>
+                  <th data-i18n="col_path">Dizin Yolu</th>
+                  <th data-i18n="col_size">Önbellek Boyutu</th>
+                  <th width="100" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyPackageManagers">
+                <tr><td colspan="4" class="empty-state">Yükleniyor...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. SMART UNINSTALLER VIEW -->
+      <section class="view-panel" id="view-uninstaller">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span data-i18n="uninstaller_title">Akıllı & Kalıntısız Uygulama Kaldırıcı</span>
+            </h1>
+            <p class="page-desc" data-i18n="uninstaller_desc">Uygulamaları Application Support, Caches, Preferences kalıntılarıyla birlikte temizleyin</p>
+          </div>
+          <button class="btn btn-secondary" id="btnUninstallerRefresh">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            <span data-i18n="btn_refresh">Yenile</span>
+          </button>
+        </div>
+
+        <div class="subtabs-bar">
+          <button class="subtab-btn active" data-subtab="uninstaller-apps">
+            <span data-i18n="subtab_apps">Yüklü Uygulamalar</span>
+            <span class="badge-count" id="countApps">--</span>
+          </button>
+          <button class="subtab-btn" data-subtab="uninstaller-orphaned">
+            <span data-i18n="subtab_orphans">Yetim Kalıntılar (Orphaned Files)</span>
+            <span class="badge-count" id="countOrphans">--</span>
+          </button>
+        </div>
+
+        <div class="subtab-content" id="subtab-uninstaller-apps">
+          <div class="filter-bar">
+            <div class="search-input-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="searchAppsInput" placeholder="Uygulama adı veya bundle id ara..." data-i18n="search_apps">
+            </div>
+            <span style="font-size: 13px; color: var(--text-secondary);">
+              Toplam Uygulama Boyutu: <strong class="size-pill" id="appsTotalSize">-- GB</strong>
+            </span>
+          </div>
+
+          <!-- App Leftovers & Reset Inspector Drawer -->
+          <div class="card" id="appLeftoverInspector" style="display: none; margin-bottom: 18px; border-color: rgba(56, 189, 248, 0.35);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div>
+                <h4 style="font-size: 14.5px; font-weight: 700; color: var(--text-main);" id="appInspectorTitle">Uygulama Kalıntı & Önbellek Detayı</h4>
+                <p style="font-size: 12px; color: var(--text-muted);" id="appInspectorSubtitle">Uygulamayı silmeden sadece seçili önbellek ve kalıntı dosyalarını sıfırlayabilirsiniz (App Reset).</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-primary btn-sm" id="btnResetAppLeftovers">Seçili Kalıntıları Sıfırla (Uygulamayı Koru)</button>
+                <button class="btn btn-secondary btn-sm" id="btnCloseAppInspector">Kapat</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th width="40"><input type="checkbox" class="custom-checkbox" id="checkAllAppLeftovers" checked></th>
+                    <th>Kalıntı / Klasör Adı</th>
+                    <th>Tür</th>
+                    <th>Boyut</th>
+                    <th>Yol</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyAppLeftovers"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table" id="tableApps">
+              <thead>
+                <tr>
+                  <th data-i18n="col_app">Uygulama</th>
+                  <th data-i18n="col_version">Sürüm</th>
+                  <th data-i18n="col_app_size">Uygulama Boyutu</th>
+                  <th data-i18n="col_leftovers">Kalıntı Sayısı & Boyutu</th>
+                  <th data-i18n="col_total_size">Toplam Boyut</th>
+                  <th width="200" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyApps">
+                <tr><td colspan="6" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subtab-content" id="subtab-uninstaller-orphaned" style="display: none;">
+          <div class="filter-bar">
+            <span style="font-size: 13px; color: var(--text-secondary);">
+              Uygulaması silinmiş fakat Library'de unutulmuş dosyalar: <strong class="size-pill" id="orphansTotalSize">-- MB</strong>
+            </span>
+            <button class="btn btn-danger btn-sm" id="btnCleanAllOrphans" data-i18n="btn_clean_all_orphans">Tüm Yetim Dosyaları Çöp Kutusuna Gönder</button>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox" class="custom-checkbox" id="checkAllOrphans"></th>
+                  <th data-i18n="col_item">Yetim Klasör / Dosya</th>
+                  <th data-i18n="col_category">Kategori</th>
+                  <th data-i18n="col_size">Boyut</th>
+                  <th data-i18n="col_path">Yol</th>
+                  <th width="90" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyOrphans">
+                <tr><td colspan="6" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. DUPLICATE FINDER VIEW -->
+      <section class="view-panel" id="view-duplicates">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span data-i18n="dup_title">Gelişmiş Çift & Benzer Dosya Analizörü</span>
+            </h1>
+            <p class="page-desc" data-i18n="dup_desc">2-Aşamalı Hash (MD5/SHA-256) ve Benzer Fotoğraf Algoritması ile %100 Doğruluk</p>
+          </div>
+          <button class="btn btn-primary" id="btnStartDuplicateScan">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span data-i18n="btn_start_scan">Taramayı Başlat</span>
+          </button>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+              <span style="font-size: 13px; font-weight: 600;" data-i18n="target_folders">Taranacak Klasörler:</span>
+              <label><input type="checkbox" class="custom-checkbox" checked id="dupScanDownloads"> Downloads</label>
+              <label><input type="checkbox" class="custom-checkbox" checked id="dupScanDocs"> Documents</label>
+              <label><input type="checkbox" class="custom-checkbox" checked id="dupScanPics"> Pictures</label>
+              <label><input type="checkbox" class="custom-checkbox" id="dupScanDesktop"> Desktop</label>
+              <button class="btn btn-secondary btn-sm" id="btnAddCustomDupFolder">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                + Özel Klasör Ekle
+              </button>
+            </div>
+            <label class="switch-container">
+              <div class="switch">
+                <input type="checkbox" id="dupFindSimilarPhotos" checked>
+                <span class="slider"></span>
+              </div>
+              <span style="font-size: 13px;" data-i18n="find_similar_photos">Benzer Fotoğrafları da Bul</span>
+            </label>
+          </div>
+          <div id="dupCustomFoldersList" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;"></div>
+        </div>
+
+        <div class="filter-bar" id="dupResultsBar" style="display: none;">
+          <div>
+            <span style="font-size: 13px; color: var(--text-secondary);">
+              <span data-i18n="wasted_space">Boşa Harcanan Alan:</span> <strong class="size-pill" id="dupWastedSpace">0 B</strong> 
+              (<span id="dupGroupCount">0</span> grup)
+            </span>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <select class="btn btn-secondary btn-sm" id="dupSmartSelectDropdown" style="background: var(--bg-card); color: var(--text-main);">
+              <option value="duplicates" data-i18n="smart_select_dup">Akıllı Seçim: Tüm Kopyaları Seç (Orijinali Koru)</option>
+              <option value="newest" data-i18n="smart_select_newest">En Yeniyi Koru (Eskileri Seç)</option>
+              <option value="oldest" data-i18n="smart_select_oldest">En Eskiyi Koru (Yenileri Seç)</option>
+            </select>
+            <button class="btn btn-danger btn-sm" id="btnDeleteSelectedDuplicates" data-i18n="btn_clean_selected">Seçilileri Çöp Kutusuna Taşı</button>
+          </div>
+        </div>
+
+        <div id="duplicateGroupsContainer">
+          <div class="empty-state">
+            <div class="empty-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <h3 data-i18n="btn_start_scan">Taramayı Başlat</h3>
+            <p>Yukarıdaki butona basarak dosya boyutlarını ve hash eşleşmelerini analiz edin.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. TREEMAP VIEW -->
+      <section class="view-panel" id="view-treemap">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              <span data-i18n="treemap_title">Etkileşimli Disk Haritası</span>
+            </h1>
+            <p class="page-desc" data-i18n="treemap_desc">Disk alanını bloklar halinde görselleştirin, klasörlere tıklayarak alt dizinleri keşfedin</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" id="btnTreemapSelectFolder">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <span data-i18n="btn_select_folder">Klasör Seç</span>
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btnTreemapRefresh">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+              <span data-i18n="btn_refresh">Yenile</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="treemap-wrapper">
+          <div class="treemap-controls">
+            <div class="treemap-breadcrumbs" id="treemapBreadcrumbs">
+              <span class="crumb-item active" data-path="~">~ (Home)</span>
+            </div>
+            <div class="treemap-legend">
+              <div class="legend-badge"><div class="legend-dot" style="background: #6366f1;"></div><span data-i18n="legend_dev">Geliştirici</span></div>
+              <div class="legend-badge"><div class="legend-dot" style="background: #ec4899;"></div><span data-i18n="legend_media">Medya</span></div>
+              <div class="legend-badge"><div class="legend-dot" style="background: #38bdf8;"></div><span data-i18n="legend_docs">Belgeler</span></div>
+              <div class="legend-badge"><div class="legend-dot" style="background: #f59e0b;"></div><span>Arşivler</span></div>
+              <div class="legend-badge"><div class="legend-dot" style="background: #a855f7;"></div><span data-i18n="legend_apps">Uygulamalar</span></div>
+            </div>
+          </div>
+
+          <div class="treemap-canvas-container" id="treemapContainer">
+            <canvas id="treemapCanvas"></canvas>
+            <div class="treemap-tooltip" id="treemapTooltip">
+              <span class="tooltip-title" id="tooltipName">name</span>
+              <span class="tooltip-size" id="tooltipSize">0 MB</span>
+              <span class="tooltip-path" id="tooltipPath">path</span>
+            </div>
+
+            <div class="treemap-inspector" id="treemapInspector">
+              <div class="inspector-header">
+                <strong id="inspectorTitle" data-i18n="selected_item">Seçili Öğe</strong>
+                <button class="inspector-close" id="btnCloseInspector">×</button>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); word-break: break-all;" id="inspectorPath">/path/to/item</div>
+              <div style="font-size: 14px; font-weight: 700; color: var(--accent-cyan);" id="inspectorSize">-- MB</div>
+              <div style="display: flex; gap: 8px; margin-top: 6px;">
+                <button class="btn btn-secondary btn-sm" id="btnInspectorFinder" style="flex: 1;" data-i18n="btn_finder">Finder'da Aç</button>
+                <button class="btn btn-danger btn-sm" id="btnInspectorTrash" style="flex: 1;" data-i18n="btn_trash">Çöp Kutusuna At</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. COMPANION VIEW -->
+      <section class="view-panel" id="view-companion">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+              <span data-i18n="companion_title">Canlı Menü Çubuğu Uygulaması</span>
+            </h1>
+            <p class="page-desc" data-i18n="companion_desc">macOS Menü Çubuğundan anlık izleme, hızlı önbellek boşaltma ve sürükle-bırak güvenli silme</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card" style="grid-column: span 2;">
+            <div class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Menü Çubuğu Özellikleri
+            </div>
+            <ul style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.8; margin-left: 20px;">
+              <li><strong>Anlık Sistem Durumu:</strong> macOS Menü Çubuğu simgesi üzerinde anlık RAM ve Disk doluluk yüzdeleri sürekli güncellenir.</li>
+              <li><strong>Hızlı RAM Purge:</strong> Sistem donmalarında tek tıkla inactive pageout tetikleyerek kullanılabilir belleği anında artırır.</li>
+              <li><strong>Arka Planda Çalışma:</strong> Ana pencereyi kapatsanız bile menü çubuğunda sessizce çalışmaya devam eder.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Hızlı Aksiyonlar</div>
+            <button class="btn btn-primary" id="btnCompanionPurge" style="width: 100%; margin-bottom: 10px;" data-i18n="btn_purge_ram">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              RAM Purge Çalıştır
+            </button>
+            <button class="btn btn-secondary" id="btnCompanionEmptyTrash" style="width: 100%;" data-i18n="btn_empty">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+              Çöp Kutusunu Boşalt
+            </button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+          <div class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span data-i18n="dropzone_title">Sürükle-Bırak Güvenli Çöp Kutusu Zone</span>
+          </div>
+          <div class="dropzone-container" id="companionDropzone">
+            <div class="dropzone-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+            </div>
+            <h4 style="font-size: 15px; margin-bottom: 6px;" data-i18n="dropzone_title">Dosya veya Klasörleri Buraya Sürükleyin</h4>
+            <p style="font-size: 12.5px; color: var(--text-muted);" data-i18n="dropzone_desc">
+              Sürüklenen öğelerin boyutları güvenli bir şekilde hesaplanır ve macOS Çöp Kutusu'na gönderilir.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5B. MAINTENANCE & STARTUP SERVICES VIEW -->
+      <section class="view-panel" id="view-maintenance">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <span data-i18n="maintenance_title">Sistem Bakımı & Başlangıç Servisleri</span>
+            </h1>
+            <p class="page-desc" data-i18n="maintenance_desc">macOS sistem bakım betikleri, DNS/Font/QuickLook sıfırlama ve LaunchAgents başlangıç servis yönetimi</p>
+          </div>
+          <button class="btn btn-secondary" id="btnMaintenanceRefresh">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            <span data-i18n="btn_refresh">Yenile</span>
+          </button>
+        </div>
+
+        <div class="subtabs-bar">
+          <button class="subtab-btn active" data-subtab="maint-scripts">
+            <span data-i18n="subtab_maint_tasks">macOS Sistem Bakım Araçları</span>
+          </button>
+          <button class="subtab-btn" data-subtab="maint-agents">
+            <span data-i18n="subtab_launch_agents">Başlangıç & Arka Plan Servisleri (LaunchAgents)</span>
+            <span class="badge-count" id="countLaunchAgents">--</span>
+          </button>
+        </div>
+
+        <!-- Subtab 1: Maintenance Scripts -->
+        <div class="subtab-content" id="subtab-maint-scripts">
+          <div class="dashboard-grid">
+            <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <div class="card-title" style="color:var(--accent-cyan);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  DNS Önbelleğini Sıfırla (Flush DNS)
+                </div>
+                <p style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">
+                  <code>dscacheutil -flushcache</code> ve <code>mDNSResponder</code> yenilemesi ile ağ bağlantı sorunlarını ve eski DNS kayıtlarını temizler.
+                </p>
+              </div>
+              <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+                <button class="btn btn-primary btn-sm btn-run-maint" data-task="flush_dns">Şimdi Çalıştır</button>
+              </div>
+            </div>
+
+            <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <div class="card-title" style="color:var(--accent-purple);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  QuickLook Önizleme Önbelleğini Sıfırla
+                </div>
+                <p style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">
+                  <code>qlmanage -r cache</code> çalıştırarak Finder'da bozulan küçük resim (thumbnail) ve boşluk tuşu önizleme önbelleğini sıfırlar.
+                </p>
+              </div>
+              <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+                <button class="btn btn-primary btn-sm btn-run-maint" data-task="reset_quicklook">Şimdi Çalıştır</button>
+              </div>
+            </div>
+
+            <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <div class="card-title" style="color:var(--accent-indigo);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+                  Font (Yazı Tipi) Önbelleğini Temizle
+                </div>
+                <p style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">
+                  <code>atsutil databases -removeUser</code> ile bozuk görünüm veren veya yavaşlayan kullanıcı font önbelleklerini temizler.
+                </p>
+              </div>
+              <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+                <button class="btn btn-primary btn-sm btn-run-maint" data-task="clear_font_cache">Şimdi Çalıştır</button>
+              </div>
+            </div>
+
+            <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <div class="card-title" style="color:var(--accent-amber);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                  LaunchServices Veritabanını Onar
+                </div>
+                <p style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">
+                  Finder "Birlikte Aç" menüsünde silinmiş veya çift görünen uygulama kayıtlarını sıfırlayıp yeniden indeksler.
+                </p>
+              </div>
+              <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+                <button class="btn btn-primary btn-sm btn-run-maint" data-task="rebuild_launchservices">Şimdi Çalıştır</button>
+              </div>
+            </div>
+
+            <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <div class="card-title" style="color:#34d399;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  Hareketsiz RAM Sayfalarını Boşalt
+                </div>
+                <p style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">
+                  Inactive ve purgeable bellek bloklarını serbest bırakarak aktif uygulamalar için kullanılabilir RAM alanını artırır.
+                </p>
+              </div>
+              <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+                <button class="btn btn-primary btn-sm btn-run-maint" data-task="purge_ram">Şimdi Çalıştır</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subtab 2: LaunchAgents & Daemons -->
+        <div class="subtab-content" id="subtab-maint-agents" style="display: none;">
+          <div class="filter-bar">
+            <div class="search-input-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="searchLaunchAgentsInput" placeholder="Servis veya plist ara...">
+            </div>
+            <span style="font-size: 13px; color: var(--text-secondary);">
+              Aktif Servisler: <strong class="size-pill" id="runningLaunchAgentsCount">--</strong>
+            </span>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Servis Etiketi (Label)</th>
+                  <th>Kapsam</th>
+                  <th>Durum</th>
+                  <th>Çalıştırılan Program</th>
+                  <th width="210">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyLaunchAgents">
+                <tr><td colspan="5" class="empty-state"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. RULES VIEW -->
+      <section class="view-panel" id="view-rules">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span data-i18n="rules_title">Otomasyon & Akıllı Kural Motoru</span>
+            </h1>
+            <p class="page-desc" data-i18n="rules_desc">Belirlediğiniz kurallara göre otomatik temizlik ve depolama büyüme alarmları</p>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-secondary" id="btnToggleNewRuleForm">
+              + Yeni Kural Ekle
+            </button>
+            <button class="btn btn-secondary" id="btnEvaluateRulesNow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span data-i18n="btn_test_rules">Kuralları Şimdi Test Et</span>
+            </button>
+            <button class="btn btn-primary" id="btnExecuteRulesNow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Kuralları Şimdi Uygula</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- New Rule Builder Card -->
+        <div class="card" id="newRuleFormCard" style="display: none; margin-bottom: 18px; border-color: rgba(56, 189, 248, 0.35);">
+          <div class="card-title">Yeni Otomasyon Kuralı Oluştur</div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">Kural Başlığı</label>
+              <input type="text" id="newRuleTitle" placeholder="Örn: Eski ZIP Arşivlerini Temizle" style="width: 100%; box-sizing: border-box; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 12px; color: var(--text-main); font-size: 13px;">
+            </div>
+            <div>
+              <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">Hedef Klasör Yolu</label>
+              <div style="display: flex; gap: 6px;">
+                <input type="text" id="newRuleTargetDir" placeholder="~/Downloads" value="~/Downloads" style="flex: 1; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 12px; color: var(--text-main); font-size: 13px;">
+                <button class="btn btn-secondary btn-sm" id="btnPickRuleFolder">Seç</button>
+              </div>
+            </div>
+            <div>
+              <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">Uzantılar / Klasör Adları (Virgülle ayırın)</label>
+              <input type="text" id="newRuleExts" placeholder=".zip, .dmg, .pkg (Boş = Tümü)" style="width: 100%; box-sizing: border-box; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 12px; color: var(--text-main); font-size: 13px;">
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <div style="flex: 1;">
+                <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">Eskilik Sınırı (Gün)</label>
+                <input type="number" id="newRuleAgeDays" value="30" min="1" style="width: 100%; box-sizing: border-box; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 12px; color: var(--text-main); font-size: 13px;">
+              </div>
+              <div style="flex: 1;">
+                <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">İşlem Türü</label>
+                <select id="newRuleAction" style="width: 100%; box-sizing: border-box; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 12px; color: var(--text-main); font-size: 13px;">
+                  <option value="trash">Çöp Kutusuna Taşı</option>
+                  <option value="notify">Sadece Bildir / Raporla</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" id="btnCancelNewRule">Vazgeç</button>
+            <button class="btn btn-primary btn-sm" id="btnSaveNewRule">Kuralı Kaydet</button>
+          </div>
+        </div>
+
+        <div id="rulesEvaluationResults" style="display: none; margin-bottom: 18px;"></div>
+
+        <div id="rulesListContainer" style="display: flex; flex-direction: column; gap: 14px;">
+        </div>
+      </section>
+
+      <!-- 9. SAFETY & WHITELIST VIEW -->
+      <section class="view-panel" id="view-safety">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span data-i18n="safety_title">Güvenlik, SIP & İstisna Listesi</span>
+            </h1>
+            <p class="page-desc" data-i18n="safety_desc">mac-cleaner güvenlik mimarisi ve taranması yasaklanan özel klasörler</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-title">
+              <span class="status-dot"></span> SIP Uyumluluğu
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+              macOS System Integrity Protection standartlarına %100 uyumludur. 
+              <code>/System</code>, <code>/usr</code>, <code>/bin</code> gibi işletim sistemi çekirdek dizinlerine asla dokunulmaz.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span class="status-dot"></span> Çöp Kutusu Güvencesi (Safe Delete)
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+              Tüm silme işlemleri varsayılan olarak macOS Finder Çöp Kutusu'na (<code>~/.Trash</code>) gönderilir. 
+              İstediğiniz zaman Finder üzerinden dosyayı geri yükleyebilirsiniz.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span class="status-dot"></span> Arka Plan Çoklu İş Parçacığı
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+              Disk taramaları arka plan servislerinde asenkron olarak çalışır; arayüz asla donmaz veya takılmaz.
+            </p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+          <div class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></svg>
+            Kullanıcı İstisna Listesi (Whitelist)
+          </div>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Aşağıdaki dizinler tüm taramalardan ve silme işlemlerinden kesin olarak muaf tutulur.
+          </p>
+
+          <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+            <input type="text" id="whitelistInput" placeholder="~/Documents/Important veya /path/to/protected" style="flex: 1; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 14px; color: var(--text-main); font-size: 13px; outline: none;">
+            <button class="btn btn-secondary btn-sm" id="btnSelectWhitelistFolder">Klasör Seç</button>
+            <button class="btn btn-primary btn-sm" id="btnAddWhitelistPath" data-i18n="whitelist_add">Listeye Ekle</button>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Korunan Dizin Yolu</th>
+                  <th width="100" data-i18n="col_action">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyWhitelist">
+                <tr><td colspan="2" class="empty-state">Yükleniyor...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Custom Confirmation Modal Dialog -->
+  <div class="modal-overlay" id="confirmModalOverlay">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <div class="modal-icon-badge badge-danger" id="modalIconBadge"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></div>
+        <div>
+          <h3 class="modal-title" id="modalTitle">Onay Gerekiyor</h3>
+          <p class="modal-text" id="modalText">Bu öğeler macOS Çöp Kutusu'na taşınacak. Onaylıyor musunuz?</p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btnModalCancel">Vazgeç</button>
+        <button class="btn btn-danger" id="btnModalConfirm">Onayla ve Sil</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- App Scripts -->
+  <script src="js/icons.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/treemap.js"></script>
+  <script src="js/deepClean.js"></script>
+  <script src="js/devClean.js"></script>
+  <script src="js/uninstaller.js"></script>
+  <script src="js/duplicates.js"></script>
+  <script src="js/rules.js"></script>
+  <script src="js/companion.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
